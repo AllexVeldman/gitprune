@@ -4,8 +4,16 @@ from fire import Fire
 
 
 def git_prune():
-    """Prune the remote branches"""
-    run(["git", "fetch", "--prune"])
+    """Prune the remote branches and tags
+
+    Because for some reason git does not prune removed tags properly, delete all
+    local tags and fetch the remotes
+    """
+    tags = run(["git", "tag", "-l"], capture_output=True, text=True).stdout.split("\n")
+    for tag in tags:
+        if tag:
+            run(["git", "tag", "-d", tag])
+    run(["git", "fetch", "--prune", "--tags"])
 
 
 def get_remote_branches(remote_name: str = "origin") -> Set[str]:
