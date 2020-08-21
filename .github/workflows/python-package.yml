@@ -23,6 +23,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Prep git
+      run: |
+        git config user.email "you@example.com"
+        git config user.name "Unittest"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
