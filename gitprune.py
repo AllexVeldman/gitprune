@@ -58,5 +58,9 @@ def prune(force: bool = False):
     delete_branches(stale_branches, force=force)
 
 
-if __name__ == "__main__":
+def main():
     Fire(prune)
+
+
+if __name__ == "__main__":
+    main()

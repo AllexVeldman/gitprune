@@ -16,6 +16,9 @@ fire = "*"
 [tool.poetry.dev-dependencies]
 pytest = "^6.0.1"
 
+[tool.poetry.scripts]
+gitprune = 'gitprune:main'
+
 [build-system]
 requires = ["poetry>=1.0"]
 build-backend = "poetry.masonry.api"
