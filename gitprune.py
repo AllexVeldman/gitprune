@@ -3,16 +3,19 @@ from typing import Set
 from fire import Fire
 
 
-def git_prune():
+def git_prune(include_tags: bool = False):
     """Prune the remote branches and tags
 
     Because for some reason git does not prune removed tags properly, delete all
     local tags and fetch the remotes
     """
-    tags = run(["git", "tag", "-l"], capture_output=True, text=True).stdout.split("\n")
-    for tag in tags:
-        if tag:
-            run(["git", "tag", "-d", tag])
+    if include_tags:
+        tags = run(
+            ["git", "tag", "-l"], capture_output=True, text=True
+        ).stdout.split("\n")
+        for tag in tags:
+            if tag:
+                run(["git", "tag", "-d", tag])
     run(["git", "fetch", "--prune", "--tags"])
 
 
@@ -51,9 +54,15 @@ def delete_branches(branches: Set[str], force: bool):
     [delete_branch(branch, force) for branch in branches]
 
 
-def prune(force: bool = False):
-    """Prune all local and remote branches that are no longer available on the server"""
-    git_prune()
+def prune(force: bool = False, tags: bool = False):
+    """Prune all local and remote branches that are no longer available on the server
+
+    :param force: Delete unmerged branches that no longer exist on the server
+    :param tags: Delete and recreate all local tags. Usefull when a tag was moved or
+    deleted
+
+    """
+    git_prune(include_tags=tags)
     stale_branches = get_stale_branches()
     delete_branches(stale_branches, force=force)
 
