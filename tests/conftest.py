@@ -1,5 +1,26 @@
-import pytest
+import os
 from subprocess import run
+
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def tmp_repo(tmp_path):
+    """Create a tmp repo to test with"""
+    org_dir = os.getcwd()
+    run(
+        [
+            "git",
+            "clone",
+            "https://github.com/AllexVeldman/gitprune.git",
+            tmp_path / "gitprune",
+        ]
+    )
+    os.chdir(tmp_path / "gitprune")
+    run(["git", "config", "user.email", "unittest@example.com"])
+    run(["git", "config", "user.name", "'Unittest Name'"])
+    yield
+    os.chdir(org_dir)
 
 
 @pytest.fixture
@@ -22,7 +43,9 @@ def with_local_branch():
 def local_branch_with_changes(with_local_branch):
     """Create a local branch with a change so we can test the force option"""
     run(["git", "checkout", "unittest_branch"])
-    run(["git", "commit", "--allow-empty", "-m", "empty unittest commit"])
-    run(["git", "checkout", "master"])
+    run(
+        ["git", "commit", "--allow-empty", "-m", "empty unittest commit", "--no-verify"]
+    )
+    run(["git", "checkout", "main"])
     yield
     run(["git", "branch", "-D", "unittest_branch"], check=False)
