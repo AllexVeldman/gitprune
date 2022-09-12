@@ -24,21 +24,21 @@ def test_get_remote_branches(with_local_branch):
     """Test if locals not in remote are not returned"""
     branches = gitprune.get_remote_branches()
     assert "unittest_branch" not in branches
-    assert "master" in branches
+    assert "main" in branches
 
 
 def test_get_local_branches(with_local_branch):
     """Test if local branches get returned"""
     branches = gitprune.get_local_branches()
     assert "unittest_branch" in branches
-    assert "master" in branches
+    assert "main" in branches
 
 
 def test_get_stale_branches(with_local_branch):
     """Test if we get only the local branches"""
     branches = gitprune.get_stale_branches()
     assert "unittest_branch" in branches
-    assert "master" not in branches
+    assert "main" not in branches
 
 
 def test_delete_branch(with_local_branch):

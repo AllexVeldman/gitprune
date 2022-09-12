@@ -1,6 +1,7 @@
 from subprocess import run
 from typing import Set
-from fire import Fire
+
+from fire import Fire  # type: ignore
 
 
 def git_prune(include_tags: bool = False):
@@ -10,9 +11,9 @@ def git_prune(include_tags: bool = False):
     local tags and fetch the remotes
     """
     if include_tags:
-        tags = run(
-            ["git", "tag", "-l"], capture_output=True, text=True
-        ).stdout.split("\n")
+        tags = run(["git", "tag", "-l"], capture_output=True, text=True).stdout.split(
+            "\n"
+        )
         for tag in tags:
             if tag:
                 run(["git", "tag", "-d", tag])
@@ -20,24 +21,31 @@ def git_prune(include_tags: bool = False):
 
 
 def get_remote_branches(remote_name: str = "origin") -> Set[str]:
-    """Return all remote branches with it's origin stripped"""
+    """Return all remote branches with its origin stripped"""
     len_ori = len(remote_name + "/")
-    remote_branches = run(["git", "branch", "-r"], capture_output=True, text=True).stdout.split("\n")
-    return {branch.strip()[len_ori:] for branch in remote_branches if
-                       "origin/HEAD" not in branch and branch}
+    remote_branches = run(
+        ["git", "branch", "-r"], capture_output=True, text=True
+    ).stdout.split("\n")
+    return {
+        branch.strip()[len_ori:]
+        for branch in remote_branches
+        if "origin/HEAD" not in branch and branch
+    }
 
 
 def get_local_branches() -> Set[str]:
     """List all local branches"""
-    local_branches = run(["git", "branch"], capture_output=True, text=True).stdout.split("\n")
+    local_branches = run(
+        ["git", "branch"], capture_output=True, text=True
+    ).stdout.split("\n")
     return {branch.strip("*").strip() for branch in local_branches if branch}
 
 
 def get_stale_branches() -> Set[str]:
     """Return all local branches no longer available on the remote"""
-    remotes = get_remote_branches()
-    locals = get_local_branches()
-    return locals - remotes
+    remote_branches = get_remote_branches()
+    local_branches = get_local_branches()
+    return local_branches - remote_branches
 
 
 def delete_branch(branch: str, force: bool):

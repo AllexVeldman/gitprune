@@ -1,3 +1,4 @@
 dist/
 *.py[co]
 .tox/
+*.egg-info/*
