@@ -1,6 +1,17 @@
+import os
 from subprocess import run
 
 import pytest
+
+
+@pytest.fixture(autouse=True, scope="session")
+def tmp_repo(tmp_path):
+    """Create a tmp repo to test with"""
+    org_dir = os.getcwd()
+    os.chdir(tmp_path)
+    run(["git", "init"])
+    yield
+    os.chdir(org_dir)
 
 
 @pytest.fixture
