@@ -4,7 +4,7 @@ A small tool to remove local branches that no longer exist on the origin server.
 
 install:
 ```commandline
-pip install git+https://github.com/AllexVeldman/gitprune.git
+pipx install git+https://github.com/AllexVeldman/gitprune.git
 ```
 
 ```commandline
